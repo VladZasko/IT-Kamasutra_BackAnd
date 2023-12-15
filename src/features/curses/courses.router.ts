@@ -1,12 +1,12 @@
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../types";
-import {QueryCoursesModel} from "../models/QueryCoursesModel";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../../types";
+import {QueryCoursesModel} from "./models/QueryCoursesModel";
 import express, {Response} from "express";
-import {CourseViewModel} from "../models/CourseViewModel";
-import {URIParamsCourseIdModel} from "../models/URIParamsCourseIdModel";
-import {CreateCourseModel} from "../models/CreateCourseModel";
-import {UpdateCourseModel} from "../models/UpdateCourseModel";
-import {CourseType, DBType} from "../db/db";
-import {HTTP_STATUSES} from "../utils";
+import {CourseViewModel} from "./models/CourseViewModel";
+import {URIParamsCourseIdModel} from "./models/URIParamsCourseIdModel";
+import {CreateCourseModel} from "./models/CreateCurseModel";
+import {UpdateCourseModel} from "./models/UpdateCourseModel";
+import {CourseType, DBType} from "../../db/db";
+import {HTTP_STATUSES} from "../../utils";
 
 export const getCourseViewModel = (dbCourse: CourseType): CourseViewModel => {
     return {
@@ -28,26 +28,18 @@ export const getCoursesRouter = (db: DBType) => {
         }
 
 
-        res.json(foundCourses.map(dbCourse => {
-            return{
-                id: dbCourse.id,
-                title: dbCourse.title
-            }
-        }))
+        res.json(foundCourses.map(getCourseViewModel))
     })
     router.get('/:id', (req: RequestWithParams<URIParamsCourseIdModel>,
                                        res: Response<CourseViewModel>) => {
-        const foundCourse= db.courses.find(c => c.id === +req.params.id);
+        const foundEntity= db.courses.find(c => c.id === +req.params.id);
 
-        if(!foundCourse) {
+        if(!foundEntity) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
             return;
         }
 
-        res.json ({
-            id: foundCourse.id,
-            title: foundCourse.title
-        })
+        res.json (getCourseViewModel(foundEntity))
     })
     router.post('/', (req: RequestWithBody<CreateCourseModel>,
                                     res: Response<CourseViewModel>) => {
@@ -67,9 +59,9 @@ export const getCoursesRouter = (db: DBType) => {
         res
             .status(HTTP_STATUSES.CREATED_201)
             .json({
-                id: createdCourse.id,
+            id: createdCourse.id,
                 title: createdCourse.title
-            })
+        })
     })
     router.delete('/:id', (req: RequestWithParams<URIParamsCourseIdModel>,
                                           res) => {

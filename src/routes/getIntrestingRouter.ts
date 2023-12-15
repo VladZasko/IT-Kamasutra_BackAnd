@@ -1,8 +1,8 @@
 import {DBType} from "../db/db";
 import express, {Response} from "express";
 import {RequestWithParams, RequestWithQuery} from "../types";
-import {URIParamsCourseIdModel} from "../models/URIParamsCourseIdModel";
-import {QueryCoursesModel} from "../models/QueryCoursesModel";
+import {URIParamsCourseIdModel} from "../features/curses/models/URIParamsCourseIdModel";
+import {QueryCoursesModel} from "../features/curses/models/QueryCoursesModel";
 export const getInterestingRouter = (db: DBType) => {
     const router = express.Router()
 
